@@ -41,6 +41,8 @@ def stat_path(origin_station, goal_station, start_date: str, end_date: str, filt
         late_chance = route['stops'][-1]['arrival_late_pct']
         pop_sum += pop
         late_chance_sum += late_chance
+    if pop_sum == 0:
+        return None
     return late_chance_sum / pop_sum
 
 
@@ -50,5 +52,8 @@ def stat_station(goal_num, start_date: str, end_date: str, **filter_kwargs):
     for o_name, o_num, line_name, line_num in origins():
         if o_num in ret:
             continue
-        ret[o_name] = stat_path(o_name, goal_num, start_date, end_date, filter_coff_func)
+        value = stat_path(o_name, goal_num, start_date, end_date, filter_coff_func)
+        if value is None:
+            continue
+        ret[o_name] = value
     return ret
