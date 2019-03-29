@@ -3,7 +3,7 @@ from typing import Iterable, Tuple
 from functools import lru_cache
 
 from opencityui.otrain_adapter.methods import path_info
-from opencityui.origins import origins
+from opencityui.get_line_origin import origins
 
 origins = lru_cache(1)(origins)
 
