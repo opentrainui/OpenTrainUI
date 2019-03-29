@@ -1,6 +1,11 @@
 from typing import Iterable, Tuple
 
+from functools import lru_cache
+
 from opencityui.otrain_adapter.methods import path_info
+from opencityui.origins import origins
+
+origins = lru_cache(1)(origins)
 
 
 def time_filter_coff(start_date: str, end_date: str,
@@ -38,5 +43,12 @@ def stat_path(origin_station, goal_station, start_date: str, end_date: str, filt
         late_chance_sum += late_chance
     return late_chance_sum / pop_sum
 
-def stat_station(origin_station, start_date: str, end_date: str, **filter_kwargs)
+
+def stat_station(goal_num, start_date: str, end_date: str, **filter_kwargs):
     filter_coff_func = time_filter_coff(start_date, end_date, **filter_kwargs)
+    ret = {}
+    for o_name, o_num, line_name, line_num in origins():
+        if o_num in ret:
+            continue
+        ret[o_name] = stat_path(o_name, goal_num, start_date, end_date, filter_coff_func)
+    return ret
